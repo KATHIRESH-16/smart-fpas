@@ -1,128 +1,136 @@
-// ================== DATABASE INIT ==================
-if (!localStorage.getItem("users")) {
-    const defaultUsers = [
-        {username:"Admin", password:hash("admin@123"), role:"admin", reminder:10},
-        {username:"Faculty", password:hash("faculty@123"), role:"faculty", reminder:10}
-    ];
-    localStorage.setItem("users", JSON.stringify(defaultUsers));
+// ================= INITIALIZE DEFAULT USERS =================
+function hash(text){
+    return btoa(text);
 }
 
-let currentUser = null;
+function initializeUsers(){
+    if(!localStorage.getItem("users")){
+        const users=[
+            {username:"Admin",password:hash("admin@123"),role:"admin",reminder:10},
+            {username:"Faculty",password:hash("faculty@123"),role:"faculty",reminder:10}
+        ];
+        localStorage.setItem("users",JSON.stringify(users));
+    }
+}
+initializeUsers();
+
+let currentUser=null;
+let correctCaptcha=0;
 let logoutTimer;
 
-// ================== HASH FUNCTION ==================
-function hash(text){
-    return btoa(text); // simple base64 for demo (replace with SHA-256 later)
+// ================= CAPTCHA =================
+function generateCaptcha(){
+    const a=Math.floor(Math.random()*10)+1;
+    const b=Math.floor(Math.random()*10)+1;
+    correctCaptcha=a+b;
+    document.getElementById("captchaQuestion").innerText=`What is ${a} + ${b}?`;
+}
+generateCaptcha();
+
+// ================= PASSWORD TOGGLE =================
+function togglePassword(){
+    const input=document.getElementById("passwordInput");
+    input.type=input.type==="password"?"text":"password";
 }
 
-// ================== LOGIN ==================
+// ================= LOGIN =================
 function login(){
-    const u = username.value;
-    const p = hash(password.value);
+    const username=document.getElementById("usernameSelect").value;
+    const password=document.getElementById("passwordInput").value;
+    const captcha=parseInt(document.getElementById("captchaAnswer").value);
 
-    const users = JSON.parse(localStorage.getItem("users"));
-    const found = users.find(x=>x.username===u && x.password===p);
+    if(captcha!==correctCaptcha){
+        alert("Captcha Incorrect");
+        generateCaptcha();
+        return;
+    }
 
-    if(found){
-        currentUser = found;
-        sessionStorage.setItem("session", u);
-        startApp();
-    }else{
-        alert("Invalid Login");
+    const users=JSON.parse(localStorage.getItem("users"));
+    const user=users.find(u=>u.username===username && u.password===hash(password));
+
+    if(!user){
+        alert("Invalid Password");
+        generateCaptcha();
+        return;
+    }
+
+    currentUser=user;
+    sessionStorage.setItem("sessionUser",user.username);
+
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("mainApp").classList.remove("hidden");
+
+    if(user.role!=="admin"){
+        document.getElementById("adminBtn").style.display="none";
+    }
+
+    startClock();
+    resetTimer();
+}
+
+// ================= AUTO LOGIN =================
+window.onload=function(){
+    const session=sessionStorage.getItem("sessionUser");
+    if(session){
+        const users=JSON.parse(localStorage.getItem("users"));
+        const user=users.find(u=>u.username===session);
+        if(user){
+            currentUser=user;
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("mainApp").classList.remove("hidden");
+            if(user.role!=="admin"){
+                document.getElementById("adminBtn").style.display="none";
+            }
+            startClock();
+            resetTimer();
+        }
     }
 }
 
-// ================== START APP ==================
-function startApp(){
-    loginSection.classList.add("hidden");
-    mainApp.classList.remove("hidden");
-
-    if(currentUser.role !== "admin"){
-        adminBtn.style.display="none";
-    }
-
-    buildTimetable();
-    startReminderEngine();
-    resetLogoutTimer();
-}
-
-// ================== LOGOUT ==================
+// ================= LOGOUT =================
 function logout(){
     sessionStorage.clear();
     location.reload();
 }
 
-// ================== VIEW SWITCH ==================
+// ================= VIEW SWITCH =================
 function showView(view){
     document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
     document.getElementById(view+"View").classList.remove("hidden");
 }
 
-// ================== CREATE USER ==================
+// ================= CREATE USER =================
 function createUser(){
-    const u = newUser.value;
-    const p = hash(newPass.value);
+    const u=document.getElementById("newUser").value;
+    const p=document.getElementById("newPass").value;
+    if(!u || !p) return alert("Fill fields");
 
-    const users = JSON.parse(localStorage.getItem("users"));
-    users.push({username:u,password:p,role:"faculty",reminder:10});
-    localStorage.setItem("users", JSON.stringify(users));
-
+    const users=JSON.parse(localStorage.getItem("users"));
+    users.push({username:u,password:hash(p),role:"faculty",reminder:10});
+    localStorage.setItem("users",JSON.stringify(users));
     alert("User Created");
 }
 
-// ================== TIMETABLE ==================
-function buildTimetable(){
-    const grid = document.getElementById("timetableGrid");
-    grid.innerHTML="";
-
-    const days=["Mon","Tue","Wed","Thu","Fri","Sat"];
-
-    days.forEach(day=>{
-        const row=document.createElement("div");
-        row.innerHTML=`<strong>${day}</strong> | Period 1 | Period 2 | Period 3 | Period 4 | Period 5 | Period 6`;
-        grid.appendChild(row);
-    });
-}
-
-// ================== REMINDER ENGINE ==================
-function startReminderEngine(){
+// ================= CLOCK =================
+function startClock(){
     setInterval(()=>{
-        const now=new Date();
-        countdown.innerText=now.toLocaleTimeString();
+        document.getElementById("clock").innerText=new Date().toLocaleTimeString();
     },1000);
 }
 
-// ================== SETTINGS ==================
-function saveReminder(){
-    currentUser.reminder = reminderInput.value;
-    alert("Saved");
-}
-
-function changeTheme(){
-    document.body.className=themeSelect.value;
-}
-
-function changePassword(){
-    const newPass=prompt("New Password");
-    if(newPass){
-        currentUser.password=hash(newPass);
-        alert("Changed");
-    }
-}
-
-// ================== AUTO LOGOUT ==================
-function resetLogoutTimer(){
+// ================= AUTO LOGOUT 15 MIN =================
+function resetTimer(){
     clearTimeout(logoutTimer);
     logoutTimer=setTimeout(()=>{
         alert("Session Expired");
         logout();
-    }, 15*60*1000);
+    },15*60*1000);
 }
 
-document.onmousemove=resetLogoutTimer;
-document.onkeypress=resetLogoutTimer;
+document.onmousemove=resetTimer;
+document.onkeypress=resetTimer;
 
-// ================== PWA ==================
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
+// ================= SERVICE WORKER =================
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register("service-worker.js");
 }
