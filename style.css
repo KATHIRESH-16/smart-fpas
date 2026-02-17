@@ -53,3 +53,9 @@ button {
     font-size: 18px;
 }
 
+.error {
+    color: #ff6b6b;
+    font-size: 14px;
+    min-height: 20px;
+    margin-bottom: 5px;
+}
