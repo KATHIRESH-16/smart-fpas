@@ -1,113 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FPAS PRO v4</title>
-
+<title>Smart FPAS</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f172a">
-
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="app">
+<!-- LOGIN -->
+<div id="loginSection" class="center">
+    <div class="card login-card">
+        <h2>Smart FPAS Login</h2>
 
-    <!-- LOGIN SECTION -->
-    <section id="loginSection" class="centered">
-    <div class="card glass login-card">
-        <h2>FPAS Login</h2>
-
-        <!-- Username Dropdown -->
         <label>Select User</label>
         <select id="usernameSelect">
             <option value="Admin">Admin</option>
             <option value="Faculty">Faculty</option>
         </select>
 
-        <!-- Password Field -->
         <label>Password</label>
         <div class="password-wrapper">
             <input type="password" id="passwordInput" placeholder="Enter Password">
             <span class="eye" onclick="togglePassword()">👁</span>
         </div>
 
-        <!-- Captcha -->
         <label id="captchaQuestion"></label>
         <input type="number" id="captchaAnswer" placeholder="Answer">
 
         <button onclick="login()">Login</button>
     </div>
-</section>
-    
-    <!-- MAIN APP -->
-    <section id="mainApp" class="hidden">
+</div>
 
-        <!-- Sidebar (Desktop) -->
-        <nav class="sidebar">
-            <h3>FPAS</h3>
-            <button onclick="showView('dashboard')">Dashboard</button>
-            <button onclick="showView('timetable')">Timetable</button>
-            <button onclick="showView('admin')" id="adminBtn">Admin</button>
-            <button onclick="showView('settings')">Settings</button>
-            <button onclick="logout()">Logout</button>
-        </nav>
+<!-- MAIN APP -->
+<div id="mainApp" class="hidden">
+    <div class="sidebar">
+        <h3>FPAS</h3>
+        <button onclick="showView('dashboard')">Dashboard</button>
+        <button onclick="showView('settings')">Settings</button>
+        <button id="adminBtn" onclick="showView('admin')">Admin</button>
+        <button onclick="logout()">Logout</button>
+    </div>
 
-        <!-- Content -->
-        <div class="content">
+    <div class="content">
 
-            <!-- Dashboard -->
-            <div id="dashboardView" class="view">
-                <h2>Dashboard</h2>
-                <div class="stats">
-                    <div class="card">Next Period: <span id="nextPeriod">None</span></div>
-                    <div class="card">Countdown: <span id="countdown">--</span></div>
-                </div>
+        <div id="dashboardView" class="view">
+            <h2>Dashboard</h2>
+            <div class="card">
+                Current Time: <span id="clock"></span>
             </div>
-
-            <!-- Timetable -->
-            <div id="timetableView" class="view hidden">
-                <h2>Weekly Timetable</h2>
-                <div id="timetableGrid"></div>
-            </div>
-
-            <!-- Admin -->
-            <div id="adminView" class="view hidden">
-                <h2>Admin Panel</h2>
-                <div class="card">
-                    <h4>Create Faculty</h4>
-                    <input id="newUser" placeholder="Username">
-                    <input id="newPass" placeholder="Password">
-                    <button onclick="createUser()">Create</button>
-                </div>
-                <div id="userList"></div>
-            </div>
-
-            <!-- Settings -->
-            <div id="settingsView" class="view hidden">
-                <h2>Settings</h2>
-                <label>Reminder Minutes</label>
-                <input type="number" id="reminderInput" min="1" max="60">
-                <button onclick="saveReminder()">Save</button>
-
-                <label>Theme</label>
-                <select id="themeSelect" onchange="changeTheme()">
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="blue">Blue</option>
-                </select>
-
-                <button onclick="changePassword()">Change Password</button>
-            </div>
-
         </div>
 
-    </section>
+        <div id="settingsView" class="view hidden">
+            <h2>Settings</h2>
+            <label>Reminder Minutes</label>
+            <input type="number" id="reminderInput" min="1" max="60">
+            <button onclick="saveReminder()">Save</button>
+        </div>
 
+        <div id="adminView" class="view hidden">
+            <h2>Admin Panel</h2>
+            <div class="card">
+                <input id="newUser" placeholder="New Username">
+                <input id="newPass" placeholder="New Password">
+                <button onclick="createUser()">Create User</button>
+            </div>
+            <div id="userList"></div>
+        </div>
+
+    </div>
 </div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
