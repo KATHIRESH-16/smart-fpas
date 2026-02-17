@@ -1,88 +1,75 @@
-// ================= DEFAULT USERS (NO HASH - SIMPLE & SAFE) =================
-function initializeUsers() {
-    if (!localStorage.getItem("users")) {
-        const users = [
-            { username: "Admin", password: "admin@123" },
-            { username: "Faculty", password: "faculty@123" }
-        ];
-        localStorage.setItem("users", JSON.stringify(users));
-    }
+/* =========================
+   FORCE CLEAN OLD STORAGE
+========================= */
+if (!localStorage.getItem("FPAS_VERSION")) {
+    localStorage.clear();
+    localStorage.setItem("FPAS_VERSION", "v5");
 }
-initializeUsers();
 
-// ================= CAPTCHA =================
-let correctCaptcha = 0;
+/* =========================
+   DEFAULT USERS
+========================= */
+if (!localStorage.getItem("users")) {
+    const defaultUsers = {
+        "Admin": "admin@123",
+        "Faculty": "faculty@123"
+    };
+    localStorage.setItem("users", JSON.stringify(defaultUsers));
+}
 
-function generateCaptcha() {
-    const a = Math.floor(Math.random() * 10) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    correctCaptcha = a + b;
+/* =========================
+   CAPTCHA
+========================= */
+let num1 = Math.floor(Math.random() * 10);
+let num2 = Math.floor(Math.random() * 10);
 
+document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("captchaQuestion").innerText =
-        `What is ${a} + ${b}?`;
-
-    document.getElementById("captchaAnswer").value = "";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    generateCaptcha();
-
-    // Eye Toggle
-    document.getElementById("eyeBtn").addEventListener("click", function () {
-        const passInput = document.getElementById("passwordInput");
-        passInput.type = passInput.type === "password" ? "text" : "password";
-    });
-
-    // Login Button
-    document.getElementById("loginBtn").addEventListener("click", login);
-
+        `What is ${num1} + ${num2}?`;
 });
 
-// ================= LOGIN =================
+/* =========================
+   TOGGLE PASSWORD
+========================= */
+function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+/* =========================
+   LOGIN
+========================= */
 function login() {
 
-    const errorBox = document.getElementById("errorMsg");
-    errorBox.innerText = "";
-
-    const username = document.getElementById("usernameSelect").value;
-    const password = document.getElementById("passwordInput").value.trim();
-    const captchaInput = document.getElementById("captchaAnswer").value.trim();
-
-    if (!password) {
-        errorBox.innerText = "Please enter password.";
-        return;
-    }
-
-    if (!captchaInput) {
-        errorBox.innerText = "Please solve the captcha.";
-        return;
-    }
-
-    if (parseInt(captchaInput) !== correctCaptcha) {
-        errorBox.innerText = "Captcha is incorrect.";
-        generateCaptcha();
-        return;
-    }
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const captcha = document.getElementById("captchaAnswer").value;
+    const error = document.getElementById("error");
 
     const users = JSON.parse(localStorage.getItem("users"));
 
-    const user = users.find(u =>
-        u.username === username &&
-        u.password === password
-    );
+    if (!password) {
+        error.innerText = "Password required!";
+        return;
+    }
 
-    if (!user) {
-        errorBox.innerText = "Incorrect password.";
-        generateCaptcha();
+    if (parseInt(captcha) !== (num1 + num2)) {
+        error.innerText = "Incorrect captcha!";
+        return;
+    }
+
+    if (users[username] !== password) {
+        error.innerText = "Invalid password!";
         return;
     }
 
     // SUCCESS
-    errorBox.style.color = "#4ade80";
-    errorBox.innerText = "Login successful!";
+    localStorage.setItem("loggedInUser", username);
+
+    error.style.color = "green";
+    error.innerText = "Login successful... Redirecting";
 
     setTimeout(() => {
-        alert("Login Successful!");
-    }, 500);
+        window.location.href = "dashboard.html";
+    }, 800);
 }
