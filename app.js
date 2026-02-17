@@ -1,14 +1,14 @@
-// ================= HASH FUNCTION =================
+// ================= HASH =================
 function hash(text) {
     return btoa(text);
 }
 
-// ================= INITIALIZE USERS =================
+// ================= DEFAULT USERS =================
 function initializeUsers() {
     if (!localStorage.getItem("users")) {
         const users = [
-            { username: "Admin", password: hash("admin@123"), role: "admin" },
-            { username: "Faculty", password: hash("faculty@123"), role: "faculty" }
+            { username: "Admin", password: hash("admin@123") },
+            { username: "Faculty", password: hash("faculty@123") }
         ];
         localStorage.setItem("users", JSON.stringify(users));
     }
@@ -19,29 +19,29 @@ initializeUsers();
 let correctCaptcha = 0;
 
 function generateCaptcha() {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
-    correctCaptcha = num1 + num2;
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    correctCaptcha = a + b;
 
-    const label = document.getElementById("captchaQuestion");
-    label.innerText = `What is ${num1} + ${num2}?`;
+    document.getElementById("captchaQuestion").innerText =
+        `What is ${a} + ${b}?`;
 }
 
-// Run captcha after page loads
-window.onload = function () {
-    generateCaptcha();
-};
+// ================= DOM READY =================
+document.addEventListener("DOMContentLoaded", function () {
 
-// ================= PASSWORD TOGGLE =================
-function togglePassword() {
-    const input = document.getElementById("passwordInput");
+    generateCaptcha(); // INSTANT load
 
-    if (input.type === "password") {
-        input.type = "text";
-    } else {
-        input.type = "password";
-    }
-}
+    // 👁 Eye Toggle
+    document.getElementById("eyeBtn").addEventListener("click", function () {
+        const passInput = document.getElementById("passwordInput");
+        passInput.type = passInput.type === "password" ? "text" : "password";
+    });
+
+    // Login Button
+    document.getElementById("loginBtn").addEventListener("click", login);
+
+});
 
 // ================= LOGIN =================
 function login() {
@@ -51,7 +51,7 @@ function login() {
     const captcha = parseInt(document.getElementById("captchaAnswer").value);
 
     if (captcha !== correctCaptcha) {
-        alert("Captcha is incorrect!");
+        alert("Captcha Incorrect!");
         generateCaptcha();
         return;
     }
