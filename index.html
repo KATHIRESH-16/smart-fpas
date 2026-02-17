@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPAS PRO v4</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- LOGIN SECTION -->
+    <section id="loginSection" class="centered">
+        <div class="card glass">
+            <h2>FPAS PRO v4</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+    </section>
+
+    <!-- MAIN APP -->
+    <section id="mainApp" class="hidden">
+
+        <!-- Sidebar (Desktop) -->
+        <nav class="sidebar">
+            <h3>FPAS</h3>
+            <button onclick="showView('dashboard')">Dashboard</button>
+            <button onclick="showView('timetable')">Timetable</button>
+            <button onclick="showView('admin')" id="adminBtn">Admin</button>
+            <button onclick="showView('settings')">Settings</button>
+            <button onclick="logout()">Logout</button>
+        </nav>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Dashboard -->
+            <div id="dashboardView" class="view">
+                <h2>Dashboard</h2>
+                <div class="stats">
+                    <div class="card">Next Period: <span id="nextPeriod">None</span></div>
+                    <div class="card">Countdown: <span id="countdown">--</span></div>
+                </div>
+            </div>
+
+            <!-- Timetable -->
+            <div id="timetableView" class="view hidden">
+                <h2>Weekly Timetable</h2>
+                <div id="timetableGrid"></div>
+            </div>
+
+            <!-- Admin -->
+            <div id="adminView" class="view hidden">
+                <h2>Admin Panel</h2>
+                <div class="card">
+                    <h4>Create Faculty</h4>
+                    <input id="newUser" placeholder="Username">
+                    <input id="newPass" placeholder="Password">
+                    <button onclick="createUser()">Create</button>
+                </div>
+                <div id="userList"></div>
+            </div>
+
+            <!-- Settings -->
+            <div id="settingsView" class="view hidden">
+                <h2>Settings</h2>
+                <label>Reminder Minutes</label>
+                <input type="number" id="reminderInput" min="1" max="60">
+                <button onclick="saveReminder()">Save</button>
+
+                <label>Theme</label>
+                <select id="themeSelect" onchange="changeTheme()">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="blue">Blue</option>
+                </select>
+
+                <button onclick="changePassword()">Change Password</button>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
