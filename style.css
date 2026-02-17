@@ -1,50 +1,63 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: 0.3s;
-}
-
-:root {
-    --bg: #0f172a;
-    --text: white;
-    --card: #1e293b;
-}
-
-.light {
-    --bg: #f1f5f9;
-    --text: #111;
-    --card: white;
-}
-
-.blue {
-    --bg: #0c4a6e;
-    --text: white;
-    --card: #075985;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
 }
 
 .hidden { display: none; }
 
-.centered {
+.center {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.login-card {
+    width: 300px;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+}
+
+button {
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.eye {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
 .sidebar {
     width: 200px;
-    background: var(--card);
     height: 100vh;
     position: fixed;
+    background: #1e293b;
     padding: 20px;
 }
 
 .sidebar button {
-    display: block;
     margin: 10px 0;
-    width: 100%;
 }
 
 .content {
@@ -52,23 +65,8 @@ body {
     padding: 20px;
 }
 
-.card {
-    background: var(--card);
-    padding: 15px;
-    border-radius: 10px;
-    margin: 10px 0;
-}
-
-.stats {
-    display: flex;
-    gap: 20px;
-}
-
 @media(max-width:768px){
-    .sidebar {
-        display:none;
-    }
-    .content {
-        margin-left:0;
-    }
+    .sidebar { display:none; }
+    .content { margin-left:0; }
 }
+v
