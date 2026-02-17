@@ -1,14 +1,9 @@
-// ================= HASH =================
-function hash(text) {
-    return btoa(text);
-}
-
-// ================= DEFAULT USERS =================
+// ================= DEFAULT USERS (NO HASH - SIMPLE & SAFE) =================
 function initializeUsers() {
     if (!localStorage.getItem("users")) {
         const users = [
-            { username: "Admin", password: hash("admin@123") },
-            { username: "Faculty", password: hash("faculty@123") }
+            { username: "Admin", password: "admin@123" },
+            { username: "Faculty", password: "faculty@123" }
         ];
         localStorage.setItem("users", JSON.stringify(users));
     }
@@ -25,14 +20,15 @@ function generateCaptcha() {
 
     document.getElementById("captchaQuestion").innerText =
         `What is ${a} + ${b}?`;
+
+    document.getElementById("captchaAnswer").value = "";
 }
 
-// ================= DOM READY =================
 document.addEventListener("DOMContentLoaded", function () {
 
-    generateCaptcha(); // INSTANT load
+    generateCaptcha();
 
-    // 👁 Eye Toggle
+    // Eye Toggle
     document.getElementById("eyeBtn").addEventListener("click", function () {
         const passInput = document.getElementById("passwordInput");
         passInput.type = passInput.type === "password" ? "text" : "password";
@@ -46,27 +42,47 @@ document.addEventListener("DOMContentLoaded", function () {
 // ================= LOGIN =================
 function login() {
 
-    const username = document.getElementById("usernameSelect").value;
-    const password = document.getElementById("passwordInput").value;
-    const captcha = parseInt(document.getElementById("captchaAnswer").value);
+    const errorBox = document.getElementById("errorMsg");
+    errorBox.innerText = "";
 
-    if (captcha !== correctCaptcha) {
-        alert("Captcha Incorrect!");
+    const username = document.getElementById("usernameSelect").value;
+    const password = document.getElementById("passwordInput").value.trim();
+    const captchaInput = document.getElementById("captchaAnswer").value.trim();
+
+    if (!password) {
+        errorBox.innerText = "Please enter password.";
+        return;
+    }
+
+    if (!captchaInput) {
+        errorBox.innerText = "Please solve the captcha.";
+        return;
+    }
+
+    if (parseInt(captchaInput) !== correctCaptcha) {
+        errorBox.innerText = "Captcha is incorrect.";
         generateCaptcha();
         return;
     }
 
     const users = JSON.parse(localStorage.getItem("users"));
+
     const user = users.find(u =>
         u.username === username &&
-        u.password === hash(password)
+        u.password === password
     );
 
     if (!user) {
-        alert("Invalid Password!");
+        errorBox.innerText = "Incorrect password.";
         generateCaptcha();
         return;
     }
 
-    alert("Login Successful!");
+    // SUCCESS
+    errorBox.style.color = "#4ade80";
+    errorBox.innerText = "Login successful!";
+
+    setTimeout(() => {
+        alert("Login Successful!");
+    }, 500);
 }
