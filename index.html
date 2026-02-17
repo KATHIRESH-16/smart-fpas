@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart FPAS</title>
-<link rel="stylesheet" href="style.css">
+    <title>FPAS Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="center">
-    <div class="login-card">
-        <h2>FPAS Login</h2>
+<div class="login-card">
+    <h2>FPAS Login</h2>
 
-        <label>Select User</label>
-        <select id="usernameSelect">
-            <option value="Admin">Admin</option>
-            <option value="Faculty">Faculty</option>
-        </select>
+    <label>Select User</label>
+    <select id="username">
+        <option value="Admin">Admin</option>
+        <option value="Faculty">Faculty</option>
+    </select>
 
-        <label>Password</label>
-        <div class="password-wrapper">
-            <input type="password" id="passwordInput" placeholder="Enter Password">
-            <span class="eye" id="eyeBtn">👁</span>
-        </div>
-
-        <label id="captchaQuestion"></label>
-        <input type="number" id="captchaAnswer" placeholder="Enter Answer">
-
-        <div id="errorMsg" class="error"></div>
-
-        <button id="loginBtn">Login</button>
+    <label>Password</label>
+    <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Enter Password">
+        <span onclick="togglePassword()">👁</span>
     </div>
+
+    <div id="captchaQuestion"></div>
+    <input type="number" id="captchaAnswer" placeholder="Enter Answer">
+
+    <button onclick="login()">Login</button>
+
+    <p id="error" class="error"></p>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>
