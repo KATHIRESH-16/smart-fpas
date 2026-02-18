@@ -1,24 +1,20 @@
-const CACHE_NAME = "fpas-v5";
+const CACHE_NAME = "fpas-v6";
 
-self.addEventListener("install", event => {
-    self.skipWaiting();
-});
+self.addEventListener("install", e => self.skipWaiting());
 
-self.addEventListener("activate", event => {
-    event.waitUntil(
+self.addEventListener("activate", e => {
+    e.waitUntil(
         caches.keys().then(keys =>
-            Promise.all(
-                keys.map(key => {
-                    if (key !== CACHE_NAME) {
-                        return caches.delete(key);
-                    }
-                })
-            )
+            Promise.all(keys.map(key => {
+                if (key !== CACHE_NAME) {
+                    return caches.delete(key);
+                }
+            }))
         )
     );
     return self.clients.claim();
 });
 
-self.addEventListener("fetch", event => {
-    event.respondWith(fetch(event.request));
+self.addEventListener("fetch", e => {
+    e.respondWith(fetch(e.request));
 });
