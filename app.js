@@ -1,44 +1,43 @@
-/* =========================
-   FORCE CLEAN OLD STORAGE
-========================= */
+/* =====================
+   INITIAL SETUP
+===================== */
 if (!localStorage.getItem("FPAS_VERSION")) {
     localStorage.clear();
-    localStorage.setItem("FPAS_VERSION", "v5");
+    localStorage.setItem("FPAS_VERSION", "v6");
 }
 
-/* =========================
-   DEFAULT USERS
-========================= */
 if (!localStorage.getItem("users")) {
-    const defaultUsers = {
+    localStorage.setItem("users", JSON.stringify({
         "Admin": "admin@123",
         "Faculty": "faculty@123"
-    };
-    localStorage.setItem("users", JSON.stringify(defaultUsers));
+    }));
 }
 
-/* =========================
+/* =====================
    CAPTCHA
-========================= */
+===================== */
 let num1 = Math.floor(Math.random() * 10);
 let num2 = Math.floor(Math.random() * 10);
 
 document.addEventListener("DOMContentLoaded", () => {
+
     document.getElementById("captchaQuestion").innerText =
         `What is ${num1} + ${num2}?`;
+
+    checkLogin();
 });
 
-/* =========================
-   TOGGLE PASSWORD
-========================= */
+/* =====================
+   PASSWORD TOGGLE
+===================== */
 function togglePassword() {
     const pass = document.getElementById("password");
     pass.type = pass.type === "password" ? "text" : "password";
 }
 
-/* =========================
+/* =====================
    LOGIN
-========================= */
+===================== */
 function login() {
 
     const username = document.getElementById("username").value;
@@ -63,13 +62,33 @@ function login() {
         return;
     }
 
-    // SUCCESS
     localStorage.setItem("loggedInUser", username);
+    loadDashboard(username);
+}
 
-    error.style.color = "green";
-    error.innerText = "Login successful... Redirecting";
+/* =====================
+   LOAD DASHBOARD
+===================== */
+function loadDashboard(user) {
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("dashboardPage").classList.remove("hidden");
+    document.getElementById("welcomeUser").innerText = "Logged in as: " + user;
+}
 
-    setTimeout(() => {
-        window.location.href = "dashboard.html";
-    }, 800);
+/* =====================
+   AUTO CHECK LOGIN
+===================== */
+function checkLogin() {
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+        loadDashboard(user);
+    }
+}
+
+/* =====================
+   LOGOUT
+===================== */
+function logout() {
+    localStorage.removeItem("loggedInUser");
+    location.reload();
 }
