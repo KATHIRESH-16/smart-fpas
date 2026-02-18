@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FPAS Login</title>
+    <title>FPAS PRO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="login-card">
+<!-- LOGIN SECTION -->
+<div id="loginPage" class="card">
     <h2>FPAS Login</h2>
 
     <label>Select User</label>
@@ -17,7 +18,7 @@
     </select>
 
     <label>Password</label>
-    <div class="password-wrapper">
+    <div class="password-box">
         <input type="password" id="password" placeholder="Enter Password">
         <span onclick="togglePassword()">👁</span>
     </div>
@@ -26,10 +27,27 @@
     <input type="number" id="captchaAnswer" placeholder="Enter Answer">
 
     <button onclick="login()">Login</button>
-
     <p id="error" class="error"></p>
 </div>
 
-<script src="app.js?v=2"></script>
+<!-- DASHBOARD SECTION -->
+<div id="dashboardPage" class="hidden">
+
+    <header>
+        <h2>FPAS Dashboard</h2>
+        <div>
+            <span id="welcomeUser"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="dashboard-content">
+        <h3>Welcome to FPAS PRO</h3>
+        <p>This is your professional single-page dashboard.</p>
+    </div>
+
+</div>
+
+<script src="app.js?v=6"></script>
 </body>
 </html>
